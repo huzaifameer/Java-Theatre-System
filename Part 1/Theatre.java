@@ -1,0 +1,295 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Theatre {
+    private static final int[] row_1=new int[12]; //Array for the 1st row
+    private static final int[] row_2=new int[16]; //Array for the 2nd row
+    private static final int[] row_3=new int[20]; //Array for the 3rd row
+    private static final ArrayList<int[]> rows=new ArrayList<>(); //Creating an Array List type-->int[]
+    public static void main(String[] args){
+        //Adding all the arrays into an Array List
+        rows.add(row_1);
+        rows.add(row_2);
+        rows.add(row_3);
+        //Assigning 0 as the default value to all the seats
+        for (int[] i:rows) {
+            for (int j=0;j<i.length;j++){
+                i[j]=0;
+            }
+        }
+        printHomeTemplate(); //Printing the home template
+    }
+
+    //Creating the method to print the home template
+    private static void printHomeTemplate(){
+        do {
+            System.out.println("Please select an option : ");
+            System.out.println();
+            System.out.println("1). Buy a ticket");
+            System.out.println("2). Print seating area");
+            System.out.println("3). Cancel ticket");
+            System.out.println("4). List available seats ");
+            System.out.println("5). Save to file ");
+            System.out.println("6). Load from file ");
+            System.out.println("7). Print ticket information and total price");
+            System.out.println("8). Sort tickets by price");
+            System.out.println("0). Quit");
+            System.out.println();
+            selectOption();
+        }while (true);
+    }
+    //Creating the method to get an option through the switch case.
+    private static void selectOption(){
+        int option=getOption();//This statement will assign the returning value from the getOption()
+
+        //Calling the switch-case
+        switch (option){
+            case 0:
+                System.exit(0);//Exit from the program
+            case 1:
+                buyTicket();//Method to buy a ticket
+                break;
+            case 2:
+                print_seating_area();//Method to print the seating area
+                break;
+            case 3:
+                cancel_ticket();//Method to cancel a booked ticket
+                break;
+            case 4:
+                show_available();//Method to list the available seats
+                break;
+            case 5:
+                save();//This method will write the 3 rows' details in a text file
+                break;
+            case 6:
+                loadFromFile();//This method will write the 3 rows' details through the written text file
+                break;
+            case 7:
+                System.out.println("Option 7");
+                break;
+            case 8:
+                System.out.println("Option 8");
+                break;
+        }
+    }
+    //Creating the method to get a valid option between 1-9
+    private static int getOption(){
+        Scanner input=new Scanner(System.in);
+        do {
+            System.out.print("Enter an Option : ");
+            int option;
+            while (true) {
+                try {
+                    option = Integer.parseInt(input.nextLine());//this line will get an integer as an option
+                    break;//if the input is an integer it'll break the loop from here
+                } catch (NumberFormatException e) {
+                    System.out.println("It,s not an option! Please try again..");
+                    System.out.print("Enter an Option : ");
+                }
+            }
+            if (option>9 | option<0){
+                System.out.println("Wrong option selected! Please try again..");
+                continue;
+            }
+            return option;
+        }while (true);
+    }
+    //Creating the method to buy a ticket
+    private static void buyTicket(){
+        System.out.println();
+        Scanner input=new Scanner(System.in);
+        int rowNum;
+        int seatNum;
+        do {
+            System.out.print("Input the row number  : ");
+            while (true) {
+                try {
+                    rowNum = Integer.parseInt(input.nextLine());//this line will get an integer as the row
+                    break;//if the input is an integer it'll break the loop from here
+                } catch (NumberFormatException e) {
+                    System.out.println("It,s not a row ! Please try again..");
+                    System.out.print("Input the row number : ");
+                }
+            }
+            if (rowNum < 0 | rowNum > 3) {
+                System.out.println("Error: This row number does not exist. Please select 1-3.’");
+                continue;
+            }
+            break;
+        }while (true);
+        //Getting the seat number
+        do {
+            System.out.print("Input the seat number : ");
+            while (true) {
+                try {
+                    seatNum = Integer.parseInt(input.nextLine());//this line will get an integer as the row
+                    break;//if the input is an integer it'll break the loop from here
+                } catch (NumberFormatException e) {
+                    System.out.println("It,s not a seat ! Please try again..");
+                    System.out.print("Input the seat number : ");
+                }
+            }
+            if (!((rowNum == 1 && (seatNum < 13 & seatNum > 0)) | (rowNum == 2 && (seatNum < 17 & seatNum > 0)) | (rowNum == 3 && (seatNum < 21 & seatNum > 0)))) {
+                //validating the correct range
+                System.out.println("Seat does not exists! Please enter a valid seat number.");
+                continue;
+            }else if (rows.get(rowNum - 1)[seatNum - 1] != 0) {
+                //checking the availability
+                System.out.println("Error: This seat is already taken. Please select another seat.");
+                continue;
+            } else {
+                System.out.println("The seat no " + seatNum + " of row " + rowNum + " is available !");
+                System.out.println("Your seat has been booked successfully.");
+                System.out.println();
+            }
+            break;
+        }while (true);
+        //-------------------------------------------------------
+        //Adding the seat into the row array
+        if (rowNum == 1) {
+            addTheBooking(seatNum, row_1);
+        }else if (rowNum == 2) {
+            addTheBooking(seatNum, row_2);
+        }else {
+            addTheBooking(seatNum, row_3);
+        }
+    }
+    //Creating the method to add the booking into the arrays
+    private static void addTheBooking(int seatNum, int[] row) {
+        for (int i = 0; i< row.length; i++){
+            if (i==(seatNum-1)){
+                row[i]=1;
+            }
+        }
+    }
+    //Creating the method to print the seating area
+    private static void print_seating_area(){
+        System.out.println();
+        System.out.format("%20s","***********\n");
+        System.out.format("%20s","*  Stage  *\n");
+        System.out.format("%20s","***********\n");
+        System.out.println();
+        for (int[] Row:rows){
+            String printingRow= "";
+            for (int k : Row) {
+                if (k == 0) {
+                    printingRow+="O";
+                }else {
+                    printingRow+="X";
+                }
+            }
+            System.out.format("%12s",printingRow.substring(0,printingRow.length()/2));
+            System.out.format("%-15s","   "+printingRow.substring((printingRow.length()/2)), printingRow.length()+1);
+            System.out.println();
+        }
+        System.out.println();
+    }
+    //Creating the method to cancel a booked seat
+    private static void cancel_ticket(){
+        System.out.println();
+        Scanner input=new Scanner(System.in);
+        int rowNum;
+        int seatNum;
+        do {
+            System.out.print("Input the row number  : ");
+            while (true) {
+                try {
+                    rowNum =Integer.parseInt(input.nextLine());//this line will get an integer as the row
+                    break;//if the input is an integer it'll break the loop from here
+                } catch (NumberFormatException e) {
+                    System.out.println("It,s not a row ! Please try again..");
+                    System.out.print("Input the row number : ");
+                }
+            }
+            if (rowNum < 0 | rowNum > 3) {
+                System.out.println("Error: This row number does not exist. Please select 1-3.’");
+                continue;
+            }
+            break;
+        }while (true);
+
+        do {
+            try {
+                System.out.print("Input the seat number : ");
+                seatNum = Integer.parseInt(input.nextLine());
+                if (rows.get(rowNum - 1)[seatNum - 1] == 0) {
+                    System.out.println("Error: This seat is not booked. Please select the correct seat.");
+                    break;
+                } else {
+                    //cancelling the seat through the method using the seat number and the row array
+                    cancelBooking(seatNum, row_1);
+                    cancelBooking(seatNum, row_2);
+                    cancelBooking(seatNum, row_3);
+                    System.out.println("Your seat has been cancelled successfully.");
+                    System.out.println();
+                }
+            }catch (ArrayIndexOutOfBoundsException | NumberFormatException e){
+                System.out.println("Theres an error, please try out with the valid input..");
+                //continue;
+            }
+            break;
+        }while (true);
+    }
+    //Creating the method to add the canceled seat into the array
+    private static void cancelBooking(int seatNum, int[] row) {
+        for (int i = 0; i< row.length; i++){
+            if (i==(seatNum-1)){
+                row[i]=0;
+            }
+        }
+    }
+    //Creating the method to print the available seats as a list
+    private static void show_available(){
+        System.out.println();
+        int i=1;
+        for (int[] Row:rows){
+            System.out.print("Seats available in row "+i+" : ");
+            for (int element=0;element<Row.length;element++){
+                if (Row[element]==0) {
+                    System.out.print((element+1)+", ");
+                }
+            }
+            i+=1;
+            System.out.print("\b\b");
+            System.out.println();
+        }
+        System.out.println();
+    }
+    //Creating the method to write the seat n row details in a text file
+    private static void save() {
+        System.out.println();
+        int rowCount=1;
+        try {
+            FileWriter text_file_writer = new FileWriter("Theatre_Rows.txt");
+            text_file_writer.write("Booked seats - 1\nAvailable seats - 0\n\n");
+            for (int[] row : rows) {
+                text_file_writer.write("Row Number "+rowCount+" : ");
+                for (int seat : row) {
+                    text_file_writer.write(seat + " ");
+                }
+                text_file_writer.write("\n");
+                rowCount+=1;
+            }
+            text_file_writer.close();
+            System.out.println("All the data saved successfully !");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    //Creating the method to write the seat n row details that provided by the text file
+    private static void loadFromFile() {
+        System.out.println();
+        try {
+            FileReader readTextFile = new FileReader("Theatre_Rows.txt");
+            int code = readTextFile.read();
+            while(code!=-1){
+                System.out.print((char)code);
+                code=readTextFile.read();
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+    }
+}

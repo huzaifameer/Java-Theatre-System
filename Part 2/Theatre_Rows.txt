@@ -1,0 +1,6 @@
+Booked seats - 1
+Available seats - 0
+
+Row Number 1 : 0 0 0 0 0 0 0 0 0 0 0 0 
+Row Number 2 : 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 
+Row Number 3 : 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
